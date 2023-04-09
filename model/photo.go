@@ -25,7 +25,7 @@ type PhotoCreateRes struct {
 	Title     string    `json:"title"`
 	Caption   string    `json:"caption"`
 	PhotoURL  string    `json:"photo_url"`
-	UserID    string    `json:"userId"`
+	UserID    string    `json:"user_id"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
@@ -33,7 +33,7 @@ type PhotoCreateRes struct {
 type PhotoUpdateReq struct {
 	Title    string `json:"title" validate:"required"`
 	Caption  string `json:"caption"`
-	PhotoURL string `json:"photoUrl" validate:"required"`
+	PhotoURL string `json:"photo_url" validate:"required"`
 }
 
 type PhotoUpdateRes struct {

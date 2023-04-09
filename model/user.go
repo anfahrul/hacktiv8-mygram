@@ -5,14 +5,15 @@ import (
 )
 
 type User struct {
-	UserID    string `gorm:"primaryKey;type:varchar(255)"`
-	Username  string `gorm:"not null;uniqueIndex;type:varchar(50)"`
-	Email     string `gorm:"not null;uniqueIndex;type:varchar(50)"`
-	Password  string `gorm:"not null;type:varchar(255)"`
-	Age       int64  `gorm:"not null;type:integer"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	Photos    []Photo
+	UserID      string `gorm:"primaryKey;type:varchar(255)"`
+	Username    string `gorm:"not null;uniqueIndex;type:varchar(50)"`
+	Email       string `gorm:"not null;uniqueIndex;type:varchar(50)"`
+	Password    string `gorm:"not null;type:varchar(255)"`
+	Age         int64  `gorm:"not null;type:integer"`
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	Photos      []Photo
+	SocialMedia []SocialMedia
 }
 
 type UserRegisterReq struct {

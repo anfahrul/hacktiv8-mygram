@@ -68,3 +68,35 @@ func PhotoUpdateValidator(requestData model.PhotoUpdateReq) []error {
 
 	return nil
 }
+
+func SocialCreateValidator(requestData model.SocialCreateReq) []error {
+	validate = validator.New()
+
+	err := validate.Struct(requestData)
+	if err != nil {
+		errResponse := []error{}
+		for _, err := range err.(validator.ValidationErrors) {
+			errResponse = append(errResponse, ErrorRequestMessages(err.Field(), err.ActualTag(), err.Param()))
+		}
+
+		return errResponse
+	}
+
+	return nil
+}
+
+func SocialUpdateValidator(requestData model.SocialUpdateReq) []error {
+	validate = validator.New()
+
+	err := validate.Struct(requestData)
+	if err != nil {
+		errResponse := []error{}
+		for _, err := range err.(validator.ValidationErrors) {
+			errResponse = append(errResponse, ErrorRequestMessages(err.Field(), err.ActualTag(), err.Param()))
+		}
+
+		return errResponse
+	}
+
+	return nil
+}
