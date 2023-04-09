@@ -11,6 +11,7 @@ type SocialRepository interface {
 	Create(photoReqData model.SocialMedia) error
 	FindAll() ([]model.SocialMedia, error)
 	FindByID(socialID string) (model.SocialMedia, error)
+	FindByUserID(userID string) ([]model.SocialMedia, error)
 	Update(socialReqData model.SocialMedia) error
 	Delete(photoReqData model.SocialMedia) error
 }
@@ -58,6 +59,21 @@ func (r *SocialRepositoryImpl) FindByID(socialID string) (model.SocialMedia, err
 	}
 
 	return social, nil
+}
+
+func (r *SocialRepositoryImpl) FindByUserID(userID string) ([]model.SocialMedia, error) {
+	socials := []model.SocialMedia{}
+
+	err := r.DB.Debug().Where("user_id = ?", userID).Find(&socials).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return []model.SocialMedia{}, err
+		}
+
+		return []model.SocialMedia{}, err
+	}
+
+	return socials, nil
 }
 
 func (r *SocialRepositoryImpl) Update(socialReqData model.SocialMedia) error {

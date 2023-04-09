@@ -7,23 +7,25 @@ import (
 	"github.com/anfahrul/hacktiv8-mygram/helper"
 	"github.com/anfahrul/hacktiv8-mygram/model"
 	"github.com/anfahrul/hacktiv8-mygram/repository"
-	"github.com/go-playground/validator/v10"
 )
 
 type UserService interface {
 	Register(userReqData model.UserRegisterReq) (*model.UserRegisterRes, error)
 	Login(userReqData model.UserLoginReq) (*string, error)
+	GetProfile(userID string) (model.User, error)
 }
 
 type UserServiceIml struct {
-	userRepository repository.UserRepository
-	validate       *validator.Validate
+	userRepository  repository.UserRepository
+	photoRepository repository.PhotoRepository
+	socalRepository repository.SocialRepository
 }
 
-func NewUserService(userRepo repository.UserRepository, validate *validator.Validate) UserService {
+func NewUserService(userRepo repository.UserRepository, photoRepo repository.PhotoRepository, socialRepo repository.SocialRepository) UserService {
 	return &UserServiceIml{
-		userRepository: userRepo,
-		validate:       validate,
+		userRepository:  userRepo,
+		photoRepository: photoRepo,
+		socalRepository: socialRepo,
 	}
 }
 
@@ -73,4 +75,32 @@ func (s *UserServiceIml) Login(userReqData model.UserLoginReq) (*string, error) 
 	}
 
 	return &token, nil
+}
+
+func (s *UserServiceIml) GetProfile(userID string) (model.User, error) {
+	user, err := s.userRepository.FindByID(userID)
+	if err != nil {
+		return model.User{}, err
+	}
+
+	photos, err := s.photoRepository.FindByUserID(userID)
+	if err != nil {
+		return model.User{}, err
+	}
+
+	socials, err := s.socalRepository.FindByUserID(userID)
+	if err != nil {
+		return model.User{}, err
+	}
+
+	return model.User{
+		UserID:      userID,
+		Username:    user.Username,
+		Email:       user.Email,
+		Age:         user.Age,
+		CreatedAt:   user.CreatedAt,
+		UpdatedAt:   user.UpdatedAt,
+		Photos:      photos,
+		SocialMedia: socials,
+	}, nil
 }

@@ -1,8 +1,6 @@
 package route
 
 import (
-	"net/http"
-
 	"github.com/anfahrul/hacktiv8-mygram/controller"
 	"github.com/anfahrul/hacktiv8-mygram/middleware"
 	"github.com/anfahrul/hacktiv8-mygram/repository"
@@ -25,8 +23,4 @@ func SetupPhotoRoute(router *gin.Engine, db *gorm.DB) {
 		authUser.PUT("/:photo_id", photoController.UpdatePhoto)
 		authUser.DELETE("/:photo_id", photoController.DeletePhoto)
 	}
-}
-
-func test2(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, "Hello")
 }

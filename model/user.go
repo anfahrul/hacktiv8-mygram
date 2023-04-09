@@ -42,3 +42,14 @@ type UserLoginReq struct {
 type UserLoginRes struct {
 	Token string `json:"token"`
 }
+
+type UserResponse struct {
+	UserID      string        `json:"user_id"`
+	Username    string        `json:"username"`
+	Email       string        `json:"email"`
+	Age         int64         `json:"age"`
+	Photos      []Photo       `json:"photos"`
+	SocialMedia []SocialMedia `json:"social media"`
+	CreatedAt   time.Time     `json:"created_at"`
+	UpdatedAt   time.Time     `json:"updated_at"`
+}

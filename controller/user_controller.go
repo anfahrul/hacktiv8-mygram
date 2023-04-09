@@ -14,6 +14,7 @@ import (
 type UserController interface {
 	Register(ctx *gin.Context)
 	Login(ctx *gin.Context)
+	GetProfile(ctx *gin.Context)
 }
 
 type UserControllerImpl struct {
@@ -124,5 +125,38 @@ func (c *UserControllerImpl) Login(ctx *gin.Context) {
 		Data: model.UserLoginRes{
 			Token: *response,
 		},
+	})
+}
+
+func (c *UserControllerImpl) GetProfile(ctx *gin.Context) {
+	userID, userIDIsExist := ctx.Get("userID")
+	if !userIDIsExist {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, model.ErrorResponse{
+			Code:   http.StatusInternalServerError,
+			Status: "Internal Server Error",
+			Errors: "UserID doesn't exist",
+		})
+		return
+	}
+
+	user, err := c.userService.GetProfile(userID.(string))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, model.ErrorResponse{
+			Code:   http.StatusInternalServerError,
+			Status: "Internal Server Error",
+			Errors: err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, model.UserResponse{
+		UserID:      user.UserID,
+		Username:    user.Username,
+		Email:       user.Email,
+		Age:         user.Age,
+		Photos:      user.Photos,
+		SocialMedia: user.SocialMedia,
+		CreatedAt:   user.CreatedAt,
+		UpdatedAt:   user.UpdatedAt,
 	})
 }

@@ -11,6 +11,7 @@ type PhotoRepository interface {
 	Create(photoReqData model.Photo) error
 	FindAll() ([]model.Photo, error)
 	FindByID(photoID string) (model.Photo, error)
+	FindByUserID(userID string) ([]model.Photo, error)
 	Update(photoReqData model.Photo) error
 	Delete(photoReqData model.Photo) error
 }
@@ -58,6 +59,21 @@ func (r *PhotoRepositoryImpl) FindByID(photoID string) (model.Photo, error) {
 	}
 
 	return photo, nil
+}
+
+func (r *PhotoRepositoryImpl) FindByUserID(userID string) ([]model.Photo, error) {
+	photos := []model.Photo{}
+
+	err := r.DB.Where("user_id = ?", userID).Find(&photos).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return []model.Photo{}, err
+		}
+
+		return []model.Photo{}, err
+	}
+
+	return photos, nil
 }
 
 func (r *PhotoRepositoryImpl) Update(photoReqData model.Photo) error {
