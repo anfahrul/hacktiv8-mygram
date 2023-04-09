@@ -13,7 +13,8 @@ import (
 
 func SetupPhotoRoute(router *gin.Engine, db *gorm.DB) {
 	photoRepository := repository.NewPhotoRepository(db)
-	photoService := service.NewPhotoService(photoRepository)
+	commentRepository := repository.NewCommentRepository(db)
+	photoService := service.NewPhotoService(photoRepository, commentRepository)
 	photoController := controller.NewPhotoController(photoService)
 
 	authUser := router.Group("/photos", middleware.AuthMiddleware)

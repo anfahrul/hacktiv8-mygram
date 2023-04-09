@@ -18,12 +18,14 @@ type PhotoService interface {
 }
 
 type PhotoServiceIml struct {
-	photoRepository repository.PhotoRepository
+	photoRepository   repository.PhotoRepository
+	commentRepository repository.CommentRepository
 }
 
-func NewPhotoService(photoRepo repository.PhotoRepository) PhotoService {
+func NewPhotoService(photoRepo repository.PhotoRepository, commentRepo repository.CommentRepository) PhotoService {
 	return &PhotoServiceIml{
-		photoRepository: photoRepo,
+		photoRepository:   photoRepo,
+		commentRepository: commentRepo,
 	}
 }
 
@@ -75,7 +77,25 @@ func (s *PhotoServiceIml) GetOne(photoID string) (model.PhotoResponse, error) {
 		return model.PhotoResponse{}, err
 	}
 
-	return model.PhotoResponse(photosResult), nil
+	comments := []model.Comment{}
+	commentsResponse, err := s.commentRepository.FindByPhotoID(photoID)
+	for _, comment := range commentsResponse {
+		comments = append(comments, model.Comment(comment))
+	}
+	if err != nil {
+		return model.PhotoResponse{}, err
+	}
+
+	return model.PhotoResponse{
+		PhotoID:   photosResult.PhotoID,
+		Title:     photosResult.Title,
+		Caption:   photosResult.Caption,
+		PhotoURL:  photosResult.PhotoURL,
+		UserID:    photosResult.UserID,
+		Comments:  comments,
+		CreatedAt: photosResult.CreatedAt,
+		UpdatedAt: photosResult.UpdatedAt,
+	}, nil
 }
 
 func (s *PhotoServiceIml) UpdatePhoto(photoReqData model.PhotoUpdateReq, userID string, photoID string) (*model.PhotoResponse, error) {

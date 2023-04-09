@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/anfahrul/hacktiv8-mygram/model"
 	"gorm.io/gorm"
@@ -11,6 +12,7 @@ type CommentRepository interface {
 	Create(commentReqData model.Comment) error
 	FindAll() ([]model.Comment, error)
 	FindByID(commentID string) (model.Comment, error)
+	FindByPhotoID(photoID string) ([]model.Comment, error)
 	Update(commentReqData model.Comment) error
 	Delete(commentReqData model.Comment) error
 }
@@ -58,6 +60,23 @@ func (r *CommentRepositoryImpl) FindByID(commentID string) (model.Comment, error
 	}
 
 	return comment, nil
+}
+
+func (r *CommentRepositoryImpl) FindByPhotoID(photoID string) ([]model.Comment, error) {
+	comments := []model.Comment{}
+
+	err := r.DB.Where("photo_id = ?", photoID).Find(&comments).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return []model.Comment{}, err
+		}
+
+		return []model.Comment{}, err
+	}
+
+	fmt.Println("comments: ", comments)
+
+	return comments, nil
 }
 
 func (r *CommentRepositoryImpl) Update(commentReqData model.Comment) error {

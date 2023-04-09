@@ -10,6 +10,7 @@ type Photo struct {
 	Caption   string `gorm:"type:varchar(255)"`
 	PhotoURL  string `gorm:"not null;type:varchar(255)"`
 	UserID    string
+	Comments  []Comment
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
@@ -50,6 +51,7 @@ type PhotoResponse struct {
 	Caption   string    `json:"caption"`
 	PhotoURL  string    `json:"photo_url"`
 	UserID    string    `json:"user_id"`
+	Comments  []Comment `json:"comments"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
