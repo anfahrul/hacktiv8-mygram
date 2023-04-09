@@ -25,6 +25,7 @@ func main() {
 	route.SetupUserRoute(router, db)
 	route.SetupPhotoRoute(router, db)
 	route.SetupSocialRoute(router, db)
+	route.SetupCommentRoute(router, db)
 
 	router.Run(PORT)
 }

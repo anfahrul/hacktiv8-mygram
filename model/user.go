@@ -14,6 +14,7 @@ type User struct {
 	UpdatedAt   time.Time
 	Photos      []Photo
 	SocialMedia []SocialMedia
+	Comment     []Comment
 }
 
 type UserRegisterReq struct {
