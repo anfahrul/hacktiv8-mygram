@@ -27,6 +27,19 @@ func NewPhotoController(service service.PhotoService) PhotoController {
 	}
 }
 
+// CreatePhoto godoc
+//
+//	@Summary		create photo
+//	@Description	create photo for a particular user
+//	@Tags			Photo
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		model.PhotoCreateReq	true	"request is required"
+//	@Success		200		{object}	model.SuccessResponse{data=model.PhotoCreateRes}
+//	@Failure		400		{object}	model.ErrorResponse{errors=interface{}}
+//	@Failure		500		{object}	model.ErrorResponse{errors=interface{}}
+//	@Security		BearerAuth
+//	@Router			/photos [post]
 func (c *PhotoControllerImpl) CreatePhoto(ctx *gin.Context) {
 	var request model.PhotoCreateReq
 
@@ -82,6 +95,18 @@ func (c *PhotoControllerImpl) CreatePhoto(ctx *gin.Context) {
 	})
 }
 
+// GetAllPhoto godoc
+//
+//	@Summary		get all photo
+//	@Description	get all photo
+//	@Tags			Photo
+//	@Accept			json
+//	@Produce		json
+//	@Success		200		{object}	model.SuccessResponse{data=[]model.PhotoResponse}
+//	@Failure		400		{object}	model.ErrorResponse{errors=interface{}}
+//	@Failure		500		{object}	model.ErrorResponse{errors=interface{}}
+//	@Security		BearerAuth
+//	@Router			/photos [get]
 func (c *PhotoControllerImpl) GetAll(ctx *gin.Context) {
 	response, err := c.photoService.GetAll()
 	if err != nil {
@@ -100,6 +125,19 @@ func (c *PhotoControllerImpl) GetAll(ctx *gin.Context) {
 	})
 }
 
+// GetOnePhoto godoc
+//
+//	@Summary		get one photo
+//	@Description	get one photo
+//	@Tags			Photo
+//	@Accept			json
+//	@Produce		json
+//  @Param          photo_id   path      string  true  "PhotoID"
+//	@Success		200		{object}	model.SuccessResponse{data=model.PhotoResponse}
+//	@Failure		400		{object}	model.ErrorResponse{errors=interface{}}
+//	@Failure		500		{object}	model.ErrorResponse{errors=interface{}}
+//	@Security		BearerAuth
+//	@Router			/photos/{photo_id} [get]
 func (c *PhotoControllerImpl) GetOne(ctx *gin.Context) {
 	photoID := ctx.Param("photo_id")
 
@@ -120,6 +158,20 @@ func (c *PhotoControllerImpl) GetOne(ctx *gin.Context) {
 	})
 }
 
+// UpdatePhoto godoc
+//
+//	@Summary		update photo
+//	@Description	update photo
+//	@Tags			Photo
+//	@Accept			json
+//	@Produce		json
+//  @Param          photo_id   path      string  true  "PhotoID"
+//	@Param			request	body		model.PhotoUpdateReq	true	"request is required"
+//	@Success		200		{object}	model.SuccessResponse{data=model.PhotoUpdateRes}
+//	@Failure		400		{object}	model.ErrorResponse{errors=interface{}}
+//	@Failure		500		{object}	model.ErrorResponse{errors=interface{}}
+//	@Security		BearerAuth
+//	@Router			/photos/{photo_id} [put]
 func (c *PhotoControllerImpl) UpdatePhoto(ctx *gin.Context) {
 	var request model.PhotoUpdateReq
 	photoID := ctx.Param("photo_id")
@@ -178,6 +230,19 @@ func (c *PhotoControllerImpl) UpdatePhoto(ctx *gin.Context) {
 	})
 }
 
+// DeletePhoto godoc
+//
+//	@Summary		delete photo
+//	@Description	delete photo
+//	@Tags			Photo
+//	@Accept			json
+//	@Produce		json
+//  @Param          photo_id   path      string  true  "PhotoID"
+//	@Success		200		{object}	model.SuccessResponse{data=model.PhotoDeleteRes}
+//	@Failure		400		{object}	model.ErrorResponse{errors=interface{}}
+//	@Failure		500		{object}	model.ErrorResponse{errors=interface{}}
+//	@Security		BearerAuth
+//	@Router			/photos/{photo_id} [delete]
 func (c *PhotoControllerImpl) DeletePhoto(ctx *gin.Context) {
 	photoID := ctx.Param("photo_id")
 

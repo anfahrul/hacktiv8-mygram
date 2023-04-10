@@ -27,6 +27,18 @@ func NewUserController(service service.UserService) UserController {
 	}
 }
 
+// Register godoc
+//
+// @Summary		register user
+// @Description	filled some form for registration
+// @Tags		User
+// @Accept		json
+// @Produce		json
+// @Param		request	body		model.UserRegisterReq	true	"request is required"
+// @Success		200		{object}	model.SuccessResponse{data=model.UserRegisterRes}
+// @Failure		400		{object}	model.ErrorResponse{errors=interface{}}
+// @Failure		500		{object}	model.ErrorResponse{errors=interface{}}
+// @Router		/register [post]
 func (c *UserControllerImpl) Register(ctx *gin.Context) {
 	request := model.UserRegisterReq{}
 	err := ctx.ShouldBindJSON(&request)
@@ -81,6 +93,18 @@ func (c *UserControllerImpl) Register(ctx *gin.Context) {
 	})
 }
 
+// Login godoc
+//
+// @Summary		login user
+// @Description	login user using username and password
+// @Tags		User
+// @Accept		json
+// @Produce		json
+// @Param		request	body		model.UserLoginReq	true	"request is required"
+// @Success		200		{object}	model.SuccessResponse{data=model.UserLoginRes}
+// @Failure		400		{object}	model.ErrorResponse{errors=interface{}}
+// @Failure		500		{object}	model.ErrorResponse{errors=interface{}}
+// @Router		/login [post]
 func (c *UserControllerImpl) Login(ctx *gin.Context) {
 	request := model.UserLoginReq{}
 	err := ctx.ShouldBindJSON(&request)

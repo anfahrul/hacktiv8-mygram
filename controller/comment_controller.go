@@ -1,12 +1,14 @@
 package controller
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/anfahrul/hacktiv8-mygram/helper"
 	"github.com/anfahrul/hacktiv8-mygram/model"
 	"github.com/anfahrul/hacktiv8-mygram/service"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type CommentController interface {
@@ -27,6 +29,20 @@ func NewCommentController(service service.CommentService) CommentController {
 	}
 }
 
+// CreateComment godoc
+//
+//	@Summary		create comment
+//	@Description	create comment for a particular user
+//	@Tags			Comment
+//	@Accept			json
+//	@Produce		json
+//  @Param          photo_id   path      string  true  "photo_id"
+//	@Param			request	body		model.CommentCreateReq	true	"request is required"
+//	@Success		200		{object}	model.SuccessResponse{data=model.CommentResponse}
+//	@Failure		400		{object}	model.ErrorResponse{errors=interface{}}
+//	@Failure		500		{object}	model.ErrorResponse{errors=interface{}}
+//	@Security		BearerAuth
+//	@Router			/comments/{photo_id} [post]
 func (c *CommentControllerImpl) CreateComment(ctx *gin.Context) {
 	var request model.CommentCreateReq
 	photoID := ctx.Param("photo_id")
@@ -68,6 +84,15 @@ func (c *CommentControllerImpl) CreateComment(ctx *gin.Context) {
 
 	response, err := c.commentService.Create(request, userID.(string), photoID)
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, model.ErrorResponse{
+				Code:   http.StatusBadRequest,
+				Status: "Bad Request",
+				Errors: errors.New("Photo not found").Error(),
+			})
+			return
+		}
+
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, model.ErrorResponse{
 			Code:   http.StatusInternalServerError,
 			Status: "Internal Server Error",
@@ -83,6 +108,18 @@ func (c *CommentControllerImpl) CreateComment(ctx *gin.Context) {
 	})
 }
 
+// GetAllComment godoc
+//
+//	@Summary		get all comment
+//	@Description	get all comment
+//	@Tags			Comment
+//	@Accept			json
+//	@Produce		json
+//	@Success		200		{object}	model.SuccessResponse{data=[]model.CommentResponse}
+//	@Failure		400		{object}	model.ErrorResponse{errors=interface{}}
+//	@Failure		500		{object}	model.ErrorResponse{errors=interface{}}
+//	@Security		BearerAuth
+//	@Router			/comments [get]
 func (c *CommentControllerImpl) GetAll(ctx *gin.Context) {
 	response, err := c.commentService.GetAll()
 	if err != nil {
@@ -101,6 +138,19 @@ func (c *CommentControllerImpl) GetAll(ctx *gin.Context) {
 	})
 }
 
+// GetOneComment godoc
+//
+//	@Summary		get one comment
+//	@Description	get one comment
+//	@Tags			Comment
+//	@Accept			json
+//	@Produce		json
+//  @Param          comment_id   path      string  true  "comment_id"
+//	@Success		200		{object}	model.SuccessResponse{data=model.CommentResponse}
+//	@Failure		400		{object}	model.ErrorResponse{errors=interface{}}
+//	@Failure		500		{object}	model.ErrorResponse{errors=interface{}}
+//	@Security		BearerAuth
+//	@Router			/comments/{comment_id} [get]
 func (c *CommentControllerImpl) GetOne(ctx *gin.Context) {
 	commentID := ctx.Param("comment_id")
 
@@ -121,6 +171,20 @@ func (c *CommentControllerImpl) GetOne(ctx *gin.Context) {
 	})
 }
 
+// UpdateComment godoc
+//
+//	@Summary		update comment
+//	@Description	update comment
+//	@Tags			Comment
+//	@Accept			json
+//	@Produce		json
+//  @Param          comment_id   path      string  true  "comment_id"
+//	@Param			request	body		model.CommentUpdateReq	true	"request is required"
+//	@Success		200		{object}	model.SuccessResponse{data=model.CommentUpdateRes}
+//	@Failure		400		{object}	model.ErrorResponse{errors=interface{}}
+//	@Failure		500		{object}	model.ErrorResponse{errors=interface{}}
+//	@Security		BearerAuth
+//	@Router			/comments/{comment_id} [put]
 func (c *CommentControllerImpl) UpdateComment(ctx *gin.Context) {
 	var request model.CommentUpdateReq
 	commentID := ctx.Param("comment_id")
@@ -179,6 +243,19 @@ func (c *CommentControllerImpl) UpdateComment(ctx *gin.Context) {
 	})
 }
 
+// DeleteComment godoc
+//
+//	@Summary		delete comment
+//	@Description	delete comment
+//	@Tags			Comment
+//	@Accept			json
+//	@Produce		json
+//  @Param          comment_id   path      string  true  "comment_id"
+//	@Success		200		{object}	model.SuccessResponse{data=model.CommentDeleteRes}
+//	@Failure		400		{object}	model.ErrorResponse{errors=interface{}}
+//	@Failure		500		{object}	model.ErrorResponse{errors=interface{}}
+//	@Security		BearerAuth
+//	@Router			/comments/{comment_id} [delete]
 func (c *CommentControllerImpl) DeleteComment(ctx *gin.Context) {
 	commentID := ctx.Param("comment_id")
 

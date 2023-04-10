@@ -19,15 +19,22 @@ type CommentService interface {
 
 type CommentServiceIml struct {
 	commentRepository repository.CommentRepository
+	photoRepository   repository.PhotoRepository
 }
 
-func NewCommentService(commentRepo repository.CommentRepository) CommentService {
+func NewCommentService(commentRepo repository.CommentRepository, photoRepo repository.PhotoRepository) CommentService {
 	return &CommentServiceIml{
 		commentRepository: commentRepo,
+		photoRepository:   photoRepo,
 	}
 }
 
 func (s *CommentServiceIml) Create(commentReqData model.CommentCreateReq, userID string, photoID string) (*model.CommentResponse, error) {
+	_, err := s.photoRepository.FindByID(photoID)
+	if err != nil {
+		return nil, err
+	}
+
 	commentID := helper.GenerateID()
 	newComment := model.Comment{
 		CommentID: commentID,
@@ -38,7 +45,7 @@ func (s *CommentServiceIml) Create(commentReqData model.CommentCreateReq, userID
 		UpdatedAt: time.Now(),
 	}
 
-	err := s.commentRepository.Create(newComment)
+	err = s.commentRepository.Create(newComment)
 	if err != nil {
 		return nil, err
 	}

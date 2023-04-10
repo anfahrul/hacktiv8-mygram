@@ -11,7 +11,8 @@ import (
 
 func SetupCommentRoute(router *gin.Engine, db *gorm.DB) {
 	commentRepository := repository.NewCommentRepository(db)
-	commentService := service.NewCommentService(commentRepository)
+	photoRepository := repository.NewPhotoRepository(db)
+	commentService := service.NewCommentService(commentRepository, photoRepository)
 	commentController := controller.NewCommentController(commentService)
 
 	authUser := router.Group("/comments", middleware.AuthMiddleware)
